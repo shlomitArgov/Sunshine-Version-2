@@ -33,6 +33,7 @@ import java.util.Arrays;
  * A placeholder fragment containing a simple view.
  */
 public class ForcastFragment extends Fragment {
+    private ArrayAdapter<String> forecastAdapter;
 
     public ForcastFragment() {
     }
@@ -79,7 +80,7 @@ public class ForcastFragment extends Fragment {
                 "Tuesday - Clear - 28/21"};
         ArrayList<String> weekForecastList = new ArrayList<>(Arrays.asList(weekForecastArray));
 
-        ArrayAdapter<String> forecastAdapter = new ArrayAdapter<String>(
+        forecastAdapter = new ArrayAdapter<String>(
                 getActivity(),  //Activity is a subclass of Context
                 R.layout.list_item_forcast, //layout of single item in the list
                 R.id.list_item_forcast_textview,    //TextView ID within the layout
@@ -92,7 +93,7 @@ public class ForcastFragment extends Fragment {
         return rootView;
     }
 
-    private static class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
+    private class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
         private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
@@ -132,7 +133,7 @@ public class ForcastFragment extends Fragment {
                 // Create the request to OpenWeatherMap, and open the connection
                 URL url = new URL(builtUri.toString());
 
-                Log.v(LOG_TAG, "Built URI: " + url);
+//                Log.v(LOG_TAG, "Built URI: " + url);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
@@ -160,7 +161,7 @@ public class ForcastFragment extends Fragment {
                 }
 
                 forecastJsonStr = buffer.toString();
-                Log.v(LOG_TAG, "Forcast JSON String: " + forecastJsonStr);
+//                Log.v(LOG_TAG, "Forcast JSON String: " + forecastJsonStr);
 
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
@@ -187,9 +188,16 @@ public class ForcastFragment extends Fragment {
             }
         }
 
+        @Override
+        protected void onPostExecute(String[] forcasts) {
+            //update the adapter with up-to-date forcasts
+            forecastAdapter.clear();
+            forecastAdapter.addAll(Arrays.asList(forcasts));
+        }
+
         /* The date/time conversion code is going to be moved outside the asynctask later,
-        * so for convenience we're breaking it out into its own method now.
-        */
+                * so for convenience we're breaking it out into its own method now.
+                */
         private String getReadableDateString(long time) {
             // Because the API returns a unix timestamp (measured in seconds),
             // it must be converted to milliseconds in order to be converted to valid date.
@@ -280,7 +288,7 @@ public class ForcastFragment extends Fragment {
             }
 
             for (String s : resultStrs) {
-                Log.v(LOG_TAG, "Forecast entry: " + s);
+               // Log.v(LOG_TAG, "Forecast entry: " + s);
             }
             return resultStrs;
         }
