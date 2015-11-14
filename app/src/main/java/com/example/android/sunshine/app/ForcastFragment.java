@@ -192,7 +192,9 @@ public class ForcastFragment extends Fragment {
         protected void onPostExecute(String[] forcasts) {
             //update the adapter with up-to-date forcasts
             forecastAdapter.clear();
-            forecastAdapter.addAll(Arrays.asList(forcasts));
+            for (String f: forcasts) {
+                forecastAdapter.add(f);
+            }
         }
 
         /* The date/time conversion code is going to be moved outside the asynctask later,
