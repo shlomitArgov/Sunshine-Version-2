@@ -1,5 +1,6 @@
 package com.example.android.sunshine.app;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -34,6 +36,7 @@ import java.util.Arrays;
  */
 public class ForcastFragment extends Fragment {
     private ArrayAdapter<String> forecastAdapter;
+    private static final String EXTRA_FORECAST = "com.example.android.sunshine.app.FORECAST_DETAILS";
 
     public ForcastFragment() {
     }
@@ -56,10 +59,12 @@ public class ForcastFragment extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_refresh) {
+        if(R.id.action_refresh == id)
+        {
             FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
             fetchWeatherTask.execute("6203223, Israel");
             return true;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -68,6 +73,7 @@ public class ForcastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        ListView forcastListView = (ListView)rootView.findViewById(R.id.listview_forcast);
 
         //Temporary use of dummy forecast data
         String[] weekForecastArray = new String[]{
@@ -87,8 +93,19 @@ public class ForcastFragment extends Fragment {
                 weekForecastList);   //List of Data items
 
         //Bind the adapter to the ListView
-        ((ListView) rootView.findViewById(R.id.listview_forcast)).setAdapter(forecastAdapter);
+        forcastListView.setAdapter(forecastAdapter);
+        forcastListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+//                Toast toast = Toast.makeText(getActivity(), forecastAdapter.getItem(i),Toast.LENGTH_SHORT);
+//                toast.show();
+                Intent detailIntent = new Intent(getActivity(), DetailActivity.class);
+                detailIntent.putExtra(EXTRA_FORECAST, forecastAdapter.getItem(i));
+                startActivity(detailIntent);
+            }
+        });
 
         return rootView;
     }
