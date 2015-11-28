@@ -1,8 +1,12 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -34,13 +38,42 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent settingsIntent = new Intent(this, SettingsActivity.class);
-            startActivity(settingsIntent);
-            return true;
+        switch (id) {
+            case R.id.settings_menu_item: {
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                return true;
+            }
+            case R.id.preffered_location_on_map_action: {
+                //Check that the app has permissions to implicitly call an app in order to view location on a map exists
+                openPrefferedLocationInMap();
+                return true;
+            }
+            default: return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
+    private void openPrefferedLocationInMap() {
+        Intent displayLocationOnMapIntent = new Intent(Intent.ACTION_VIEW);
+        if (displayLocationOnMapIntent.resolveActivity(this.getPackageManager()) != null) {
+            //Get user's preffered location
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String preferredLocation = sharedPreferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+            //Set user's location in the intent
+            //Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            //try {
+              //  List<Address> addresses = geocoder.getFromLocationName(preferredLocation, 1);
+                //Address address = addresses.get(0);
+                Uri geolocationUri = Uri.parse("geo:0,0").buildUpon().appendQueryParameter("q", preferredLocation).appendQueryParameter("z","11").build();
+                displayLocationOnMapIntent.setData(geolocationUri);
+                startActivity(displayLocationOnMapIntent);
+            //} catch (IOException e) {
+            //Log.e(this.getClass().getSimpleName(), e.getLocalizedMessage());
+            //}
+        } else {
+            Log.d(this.getClass().getSimpleName(), "Failed to get intent for viewing preferred location on map");
+        }
+    }
 }
+
+

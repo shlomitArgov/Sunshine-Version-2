@@ -17,6 +17,7 @@
     <string name="imperial">Imperial</string>
     <string name="pref_temp_units_default">@string/metric</string>
     <string name="pref_temp_units_dialog_title">Select units</string>
+    <string name="view_preferred_location_on_map">View preferred location on map</string>
 
 
 </resources>

@@ -66,12 +66,16 @@ public class ForcastFragment extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if(R.id.action_refresh == id)
-        {
-            updateWeather();
-            return true;
+        switch (id) {
+            case R.id.action_refresh: {
+                updateWeather();
+                return true;
+            }
+
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private void updateWeather() {
