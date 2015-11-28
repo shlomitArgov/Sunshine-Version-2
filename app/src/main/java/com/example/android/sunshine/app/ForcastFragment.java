@@ -31,7 +31,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -56,6 +55,12 @@ public class ForcastFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -63,14 +68,17 @@ public class ForcastFragment extends Fragment {
         int id = item.getItemId();
         if(R.id.action_refresh == id)
         {
-            FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String zipCode = sharedPreferences.getString(getString(R.string.pref_location_key), "");
-            fetchWeatherTask.execute(zipCode);
+            updateWeather();
             return true;
-
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateWeather() {
+        FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String zipCode = sharedPreferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+        fetchWeatherTask.execute(zipCode);
     }
 
     @Override
@@ -79,22 +87,11 @@ public class ForcastFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ListView forcastListView = (ListView)rootView.findViewById(R.id.listview_forcast);
 
-        //Temporary use of dummy forecast data
-        String[] weekForecastArray = new String[]{
-                "Today - Sunny - 33/24",
-                "Tomorrow - Mild - 27/20",
-                "Friday - Cloudy - 25/17",
-                "Saturday - Rainy - 24/18",
-                "Sunday - Foggy - 23/16",
-                "Monday - Sunny - 25/20",
-                "Tuesday - Clear - 28/21"};
-        ArrayList<String> weekForecastList = new ArrayList<>(Arrays.asList(weekForecastArray));
-
         forecastAdapter = new ArrayAdapter<String>(
                 getActivity(),  //Activity is a subclass of Context
                 R.layout.list_item_forcast, //layout of single item in the list
                 R.id.list_item_forcast_textview,    //TextView ID within the layout
-                weekForecastList);   //List of Data items
+                new ArrayList<String>());   //List of Data items
 
         //Bind the adapter to the ListView
         forcastListView.setAdapter(forecastAdapter);
