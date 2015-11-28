@@ -230,8 +230,23 @@ public class ForcastFragment extends Fragment {
          */
         private String formatHighLows(double high, double low) {
             // For presentation, assume the user doesn't care about tenths of a degree.
-            long roundedHigh = Math.round(high);
-            long roundedLow = Math.round(low);
+            long roundedHigh;
+            long roundedLow;
+
+            //Handle different units display based on shared preferences:
+            //1. Get preferred unit
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String preferredUnit = sharedPreferences.getString(getString(R.string.pref_temp_units_key), getString(R.string.pref_temp_units_default));
+            //2. Update weather values if necessary (weather is retrieved from the OpenWeatherMap API in Metric units)
+            if (preferredUnit.equals(getString(R.string.imperial)))
+            {
+                roundedHigh = Math.round(1.8*high + 32);
+                roundedLow = Math.round(1.8*low + 32);
+            }
+            else {
+                roundedHigh =  Math.round(high);
+                roundedLow = Math.round(low);
+            }
 
             String highLowStr = roundedHigh + "/" + roundedLow;
             return highLowStr;
