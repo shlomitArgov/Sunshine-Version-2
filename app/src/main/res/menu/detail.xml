@@ -4,4 +4,8 @@
     tools:context="com.example.android.sunshine.app.DetailActivity">
     <item android:id="@+id/settings_menu_item" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/share_forecast_action"
+        android:title="@string/share_forecast_label"
+        app:showAsAction="always"
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"/>
 </menu>
