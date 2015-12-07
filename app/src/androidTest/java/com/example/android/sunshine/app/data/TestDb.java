@@ -15,6 +15,7 @@
  */
 package com.example.android.sunshine.app.data;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
@@ -69,7 +70,7 @@ public class TestDb extends AndroidTestCase {
         // verify that the tables have been created
         do {
             tableNameHashSet.remove(c.getString(0));
-        } while( c.moveToNext() );
+        } while (c.moveToNext());
 
         // if this fails, it means that your database doesn't contain both the location entry
         // and weather entry tables
@@ -95,7 +96,7 @@ public class TestDb extends AndroidTestCase {
         do {
             String columnName = c.getString(columnNameIndex);
             locationColumnHashSet.remove(columnName);
-        } while(c.moveToNext());
+        } while (c.moveToNext());
 
         // if this fails, it means that your database doesn't contain all of the required location
         // entry columns
@@ -112,23 +113,33 @@ public class TestDb extends AndroidTestCase {
     */
     public void testLocationTable() {
         // First step: Get reference to writable database
+        SQLiteDatabase weatherDb = new WeatherDbHelper(mContext).getWritableDatabase();
 
         // Create ContentValues of what you want to insert
         // (you can use the createNorthPoleLocationValues if you wish)
+        ContentValues northPoleLocationValues = TestUtilities.createNorthPoleLocationValues();
 
         // Insert ContentValues into database and get a row ID back
+        long rowId = weatherDb.insert(WeatherContract.LocationEntry.TABLE_NAME, null, northPoleLocationValues);
 
         // Query the database and receive a Cursor back
+        assertTrue("Error: insert into Locations DB failed (row ID = " + rowId + ")", rowId != -1);
 
+        Cursor cursor = weatherDb.query(WeatherContract.LocationEntry.TABLE_NAME, null,
+                WeatherContract.LocationEntry._ID + " = " + rowId, null, null, null, null);
         // Move the cursor to a valid database row
-
-        // Validate data in resulting Cursor with the original ContentValues
-        // (you can use the validateCurrentRecord function in TestUtilities to validate the
-        // query if you like)
-
-        // Finally, close the cursor and database
-
+        assertTrue("Error: failed to read from Locations DB", cursor != null);
+        assertTrue("Error: no records returned from location DB query", cursor.moveToFirst());
+            // Validate data in resulting Cursor with the original ContentValues
+            // (you can use the validateCurrentRecord function in TestUtilities to validate the
+            // query if you like)
+            TestUtilities.validateCurrentRecord("Inconsistency found between saved and retrieved location data",
+                    cursor, northPoleLocationValues);
+            // Finally, close the cursor and database
+            cursor.close();
+            weatherDb.close();
     }
+
 
     /*
         Students:  Here is where you will build code to test that we can insert and query the
