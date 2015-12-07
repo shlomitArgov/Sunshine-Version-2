@@ -14,6 +14,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v(this.getClass().getSimpleName(), "Entered onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
@@ -25,9 +26,42 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.v(this.getClass().getSimpleName(), "Entered onCreateOptionsMenu");
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // The activity is about to become visible.
+        Log.v(this.getClass().getSimpleName(), "Entered onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // The activity is about to become visible.
+        Log.v(this.getClass().getSimpleName(), "Entered onResume");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.v(this.getClass().getSimpleName(), "Entered onDestroy");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.v(this.getClass().getSimpleName(), "Entered onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.v(this.getClass().getSimpleName(), "Entered onStop");
     }
 
     @Override
@@ -35,6 +69,7 @@ public class MainActivity extends ActionBarActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        Log.v(this.getClass().getSimpleName(), "Entered onOptionsItemSelected");
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
