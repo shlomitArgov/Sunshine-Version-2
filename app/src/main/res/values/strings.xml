@@ -12,10 +12,10 @@
     <string name="pref_location_default" translatable="false">6203223, Israel</string>
     <string name="pref_location_key" translatable="false">location</string>
     <string name="pref_temp_units_title" translateable="false">Temperature Units</string>
-    <string name="pref_temp_units_key" translateable="false">temp_units</string>
-    <string name="metric">Metric</string>
-    <string name="imperial">Imperial</string>
-    <string name="pref_temp_units_default">@string/metric</string>
+    <string name="pref_units_key" translateable="false">temp_units</string>
+    <string name="pref_units_metric">Metric</string>
+    <string name="pref_units_imperial">Imperial</string>
+    <string name="pref_temp_units_default">@string/pref_units_metric</string>
     <string name="pref_temp_units_dialog_title">Select units</string>
     <string name="view_preferred_location_on_map">View preferred location on map</string>
     <string name="share_forecast_label">Share</string>

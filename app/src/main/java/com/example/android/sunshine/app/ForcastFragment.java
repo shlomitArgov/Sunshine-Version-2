@@ -240,9 +240,9 @@ public class ForcastFragment extends Fragment {
             //Handle different units display based on shared preferences:
             //1. Get preferred unit
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String preferredUnit = sharedPreferences.getString(getString(R.string.pref_temp_units_key), getString(R.string.pref_temp_units_default));
+            String preferredUnit = sharedPreferences.getString(getString(R.string.pref_units_key), getString(R.string.pref_temp_units_default));
             //2. Update weather values if necessary (weather is retrieved from the OpenWeatherMap API in Metric units)
-            if (preferredUnit.equals(getString(R.string.imperial)))
+            if (preferredUnit.equals(getString(R.string.pref_units_imperial)))
             {
                 roundedHigh = Math.round(1.8*high + 32);
                 roundedLow = Math.round(1.8*low + 32);
