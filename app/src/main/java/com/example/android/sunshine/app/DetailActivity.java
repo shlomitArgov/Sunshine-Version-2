@@ -62,7 +62,7 @@ public class DetailActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.settings_menu_item) {
+        if (id == R.id.detail_settings_menu_item) {
 
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsIntent);
