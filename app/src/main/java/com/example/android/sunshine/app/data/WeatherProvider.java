@@ -341,7 +341,7 @@ public class WeatherProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         switch (match) {
-            case WEATHER:
+            case WEATHER: {
                 db.beginTransaction();
                 int returnCount = 0;
                 try {
@@ -358,6 +358,7 @@ public class WeatherProvider extends ContentProvider {
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
                 return returnCount;
+            }
             default:
                 return super.bulkInsert(uri, values);
         }
