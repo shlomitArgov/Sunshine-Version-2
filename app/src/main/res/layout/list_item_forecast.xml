@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
-    android:gravity="center_vertical"
     android:padding="16dp">
 
     <ImageView
@@ -23,14 +23,12 @@
         <TextView
             android:id="@+id/list_item_date_textview"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Today" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/list_item_forecast_textview"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sunny" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 
@@ -43,14 +41,12 @@
         <TextView
             android:id="@+id/list_item_high_textview"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="20" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/list_item_low_textview"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="15" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </LinearLayout>
