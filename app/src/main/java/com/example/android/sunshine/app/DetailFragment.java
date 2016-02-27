@@ -2,6 +2,7 @@ package com.example.android.sunshine.app;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -26,6 +27,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
 
     private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
+    static final String DETAIL_URI = "URI";
+    private Uri mUri;
 
     private ShareActionProvider mShareActionProvider;
     private String mForecast;
@@ -40,7 +43,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private static final int DETAIL_LOADER = 0;
 
-    private static final String[] DETAILS_COLUMNS = {
+    private static final String[] DETAIL_COLUMNS = {
             WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
             WeatherContract.WeatherEntry.COLUMN_DATE,
             WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
@@ -76,16 +79,22 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mUri = arguments.getParcelable(DetailFragment.DETAIL_URI);
+        }
+
         View layout = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        mDayTextView  = (TextView) layout.findViewById(R.id.list_item_day_textview);
+        mDayTextView = (TextView) layout.findViewById(R.id.list_item_day_textview);
         mDateTextView = (TextView) layout.findViewById(R.id.list_item_date_textview);
         mTempHighTextView = (TextView) layout.findViewById(R.id.list_item_high_textview);
         mTempLowTextView = (TextView) layout.findViewById(R.id.list_item_low_textview);
         mHumidityTextView = (TextView) layout.findViewById(R.id.list_item_humidity);
         mPressureTextView = (TextView) layout.findViewById(R.id.list_item_pressure);
         mWindSpeedTextView = (TextView) layout.findViewById(R.id.list_item_wind_speed);
-        mImageView = (ImageView)layout.findViewById(R.id.list_item_icon);
+        mImageView = (ImageView) layout.findViewById(R.id.list_item_icon);
 
         return layout;
     }
@@ -124,21 +133,18 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.v(LOG_TAG, "In onCreateLoader");
-        Intent intent = getActivity().getIntent();
-        if (intent == null || intent.getData() == null) {
-            return null;
+        if (null != mUri) {
+            // Now create and return a CursorLoader that will take care of
+            // creating a Cursor for the data being displayed.
+            return new CursorLoader(
+                    getActivity(),
+                    mUri,
+                    DETAIL_COLUMNS,
+                    null,
+                    null,
+                    null);
         }
-
-        // Now create and return a CursorLoader that will take care of
-        // creating a Cursor for the data being displayed.
-        return new CursorLoader(
-                getActivity(),
-                intent.getData(),
-                DETAILS_COLUMNS,
-                null,
-                null,
-                null
-        );
+        return null;
     }
 
     @Override
@@ -149,7 +155,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
         long date = data.getLong(COL_WEATHER_DATE);
         String dateString = Utility.formatDate(date);
-        
+
         mDayTextView.setText(Utility.getDayName(getActivity(), date));
         mDateTextView.setText(Utility.getFormattedMonthDay(getActivity(), date));
 
@@ -185,6 +191,18 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         // If onCreateOptionsMenu has already happened, we need to update the share intent now.
         if (mShareActionProvider != null) {
             mShareActionProvider.setShareIntent(createShareForecastIntent());
+        }
+    }
+
+
+    void onLocationChanged(String newLocation) {
+        // replace the uri, since the location has changed
+        Uri uri = mUri;
+        if (null != uri) {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+            mUri = updatedUri;
+            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
         }
     }
 
